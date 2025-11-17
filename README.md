@@ -4,7 +4,7 @@
 
 ✅ **Username aceita até 64 caracteres** (original: 32)
 - Permite usar emails completos como username
-- Exemplo: `bernardo.lima@npsolucoesinfo.com.br` funciona!
+- Exemplo: `b33dddo.lddma@npsdfdfdfdenfo.com.br` funciona!
 
 ## 📦 Usar Esta Imagem
 
