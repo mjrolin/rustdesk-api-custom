@@ -21,17 +21,48 @@ BASE_DIR="/opt/rustdesk-api-master/rustdesk-api-master"
 cd "$BASE_DIR"
 
 # 1. Aplicar modificações no código
-echo -e "${BLUE}[1/6]${NC} Aplicando modificações no código (username: 32 -> 64 caracteres)..."
+echo -e "${BLUE}[1/6]${NC} Aplicando todas as melhorias de validação..."
+echo ""
 
-# Modificar http/request/api/user.go
-sed -i 's/validate:"required,gte=2,lte=32" label:"用户名"/validate:"required,gte=2,lte=64" label:"用户名"/g' \
+# 1.1 Senha: 4-32 → 8-128 caracteres (SEGURANÇA) - FAZER PRIMEIRO!
+echo -e "  ${BLUE}→${NC} Senha: 4-32 → 8-128 caracteres (segurança)"
+sed -i 's/validate:"gte=4,lte=32"/validate:"gte=8,lte=128"/g' \
     http/request/api/user.go
-
-# Modificar http/request/admin/user.go (2 ocorrências)
-sed -i 's/validate:"required,gte=2,lte=32"/validate:"required,gte=2,lte=64"/g' \
+sed -i 's/validate:"required,gte=4,lte=32"/validate:"required,gte=8,lte=128"/g' \
     http/request/admin/user.go
 
-echo -e "${GREEN}✓${NC} Modificações aplicadas com sucesso"
+# 1.2 Username: 32 → 64 caracteres e mínimo 2 → 3
+echo -e "  ${BLUE}→${NC} Username: 32 → 64 caracteres, mínimo 2 → 3"
+# Mudar username: lte=32 → lte=64 E gte=2 → gte=3
+sed -i '/Username.*validate/s/lte=32/lte=64/g' http/request/api/user.go
+sed -i '/Username.*validate/s/lte=32/lte=64/g' http/request/admin/user.go
+sed -i '/Username.*validate/s/gte=2/gte=3/g' http/request/api/user.go
+sed -i '/Username.*validate/s/gte=2/gte=3/g' http/request/admin/user.go
+
+# 1.3 Email: Habilitar validação de formato
+echo -e "  ${BLUE}→${NC} Email: Validação de formato habilitada"
+sed -i 's|Email.*string.*`json:"email"`.*//validate.*|Email    string `json:"email" validate:"omitempty,email"` //email不强制|g' \
+    http/request/admin/user.go
+
+# 1.4 Nickname: Adicionar limite de 50 caracteres
+echo -e "  ${BLUE}→${NC} Nickname: Limite de 50 caracteres"
+sed -i 's|Nickname string.*`json:"nickname"`|Nickname string `json:"nickname" validate:"omitempty,gte=2,lte=50"`|g' \
+    http/request/admin/user.go
+
+# 1.5 Remark: Adicionar limite de 500 caracteres
+echo -e "  ${BLUE}→${NC} Remark: Limite de 500 caracteres"
+sed -i 's|Remark.*string.*`json:"remark"`|Remark string `json:"remark" validate:"omitempty,lte=500"`|g' \
+    http/request/admin/user.go
+
+echo ""
+echo -e "${GREEN}✓${NC} Todas as melhorias aplicadas com sucesso!"
+echo ""
+echo "  ✅ Username: 3-64 caracteres (permite emails completos)"
+echo "  ✅ Senha: 8-128 caracteres (mais seguro)"
+echo "  ✅ Email: Validação de formato"
+echo "  ✅ Nickname: Máximo 50 caracteres"
+echo "  ✅ Remark: Máximo 500 caracteres"
+echo ""
 
 # 2. Baixar dependências
 echo -e "${BLUE}[2/6]${NC} Baixando dependências Go..."
