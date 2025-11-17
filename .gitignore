@@ -1,0 +1,29 @@
+# Dados sensíveis
+data/
+runtime/
+*.db
+*.sqlite
+
+# Builds
+release/
+bin/
+*.exe
+*.out
+*.tar.gz
+
+# Logs
+*.log
+*.tmp
+*.swp
+
+# Config
+.env
+config.yaml
+
+# Dependências
+vendor/
+
+# IDEs
+.vscode/
+.idea/
+.DS_Store

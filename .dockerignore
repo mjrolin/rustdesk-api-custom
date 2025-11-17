@@ -1,0 +1,16 @@
+# Permitir release/ para o build
+docker-compose.yaml
+docker-compose-dev.yaml
+Dockerfile
+Dockerfile.dev
+docker-dev.sh
+data/
+.git/
+*.log
+*.tmp
+*.swp
+.vscode/
+.idea/
+bin/
+*.exe
+*.out
